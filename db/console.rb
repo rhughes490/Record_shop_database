@@ -1,3 +1,20 @@
+require('pry')
+require_relative('../models/albums.rb')
+require_relative('../models/artist.rb')
+
+artist1 = Artist.new({
+  "name" => "Oasis"
+})
+
+artist1.save()
+
+album1 = Album.new({
+  "title" => "Definitely maybe"
+  "genre" => "rock"
+  "artist_id" => artist1.id
+})
+
+
 
 
 
