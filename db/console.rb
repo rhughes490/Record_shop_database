@@ -2,6 +2,9 @@ require('pry')
 require_relative('../models/albums.rb')
 require_relative('../models/artist.rb')
 
+Albums.delete_all()
+Artist.delete_all()
+
 artist1 = Artist.new({
   "name" => "Oasis"
 })
