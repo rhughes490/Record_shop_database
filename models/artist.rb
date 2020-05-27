@@ -1,4 +1,6 @@
 require('pg')
+require_relative('./albums.rb')
+require_relative('../db/sql_runner.rb')
 
 class Artist
 
@@ -11,7 +13,6 @@ class Artist
 
 
   def save()
-    db = PG.connect({ dbname: 'record_shop', host: 'localhost'})
     sql = "INSERT INTO artists
     (
     name
@@ -22,13 +23,31 @@ class Artist
     )
     RETURNING id"
     values = [@name]
-    db.prepare("save", sql)
-    @id = db.exec_prepared("save", values)[0]["id"].to_i
-    db.close()
+    result = SqlRunner.run(sql, values)
+    @id = result[0]['id'].to_i
   end
 
+  def Artist.all()
+    sql = "SELECT * FROM artists"
+    artists = SqlRunner.run(sql)
+    return artists.map { |artist| Artist.new(artist)}
+  end
+
+  def album()
+    sql = "SELECT * FROM albums WHERE artist_id = $1"
+    values = [@id]
+    albums = SqlRunner.run(sql, values)
+    return albums.map { |album| Albums.new(album)}
+  end
 
 end
+
+# def pizza_orders()
+#   sql = "SELECT * FROM pizza_orders WHERE customer_id = $1"
+#   values = [@id]
+#   pizza_orders = SqlRunner.run(sql, values)
+#   return pizza_orders.map { |pizza_order| PizzaOrder.new (pizza_order)}
+# end
 
 
 
@@ -94,11 +113,7 @@ end
 #     SqlRunner.run(sql)
 #   end
 
-#   def self.all()
-#     sql = "SELECT * FROM customers"
-#     customers = SqlRunner.run(sql)
-#     return customers.map { |customer| Customer.new(customer)}
-#   end
+#   
 
 #   def pizza_orders()
 #     sql = "SELECT * FROM pizza_orders WHERE customer_id = $1"

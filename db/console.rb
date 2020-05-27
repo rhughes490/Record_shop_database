@@ -8,43 +8,13 @@ artist1 = Artist.new({
 
 artist1.save()
 
-album1 = Album.new({
-  "title" => "Definitely maybe"
-  "genre" => "rock"
+album1 = Albums.new({
+  "title" => "Definitely maybe",
+  "genre" => "rock",
   "artist_id" => artist1.id
 })
 
+album1.save()
 
-
-
-
-
-
-
-
-
-
-# require("pry")
-# require_relative("../models/pizza_order")
-# require_relative("../models/customer")
-
-# PizzaOrder.delete_all()
-# Customer.delete_all()
-
-# alex = Customer.new({
-#     "first_name" => "Alex",
-#     "last_name" => "Bazlinton"
-# })
-
-# alex.save()
-
-# order1 = PizzaOrder.new({
-#     "topping" => "Napoli",
-#     "quantity" => 1,
-#     "customer_id" => alex.id
-# })
-
-# order1.save()
-
-# binding.pry
-# nil
+binding.pry
+nil

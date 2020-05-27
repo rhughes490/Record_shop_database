@@ -1,4 +1,6 @@
 require ('pg')
+require_relative('./artist.rb')
+require_relative('../db/sql_runner.rb')
 
 class Albums
 
@@ -9,11 +11,10 @@ class Albums
     @title = options['title']
     @genre = options['genre']
     @id = options['id'].to_i if options['id']
-    @customer_id = options['customer_id'].to_i
+    @artist_id = options['artist_id'].to_i
   end
 
   def save()
-    db = PG.connect({dbnam: 'record_shop', host: 'localhost'})
     sql = "INSERT INTO albums
     (
       title,
@@ -25,68 +26,29 @@ class Albums
     )
     RETURNING id"
     values = [@title, @genre, @artist_id]
-    db.prepare("save", sql)
-    @id = db.exec_prepared("save", values)[0]["id"].to_i
-    db.close()
+    result = SqlRunner.run(sql, values)
+    @id = result[0]["id"].to_i
+    
+  end
+
+  def Albums.all()
+    sql = "SELECT * FROM albums"
+    albums = SqlRunner.run(sql)
+    return albums.map { |album| Albums.new(album)}
+  end
+
+
+  def artist()
+    sql = "SELECT * FROM artists WHERE id = $1"
+    values = [@artist_id]
+    artist = SqlRunner.run(sql, values)[0]
+    return Artist.new(artist)
   end
 
 end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# require('pg')
-# require_relative('./customer')
-
-# class PizzaOrder
-
-#   attr_accessor :topping, :quantity
-#   attr_reader :id, :customer_id
-
-#   def initialize(options)
-#     @topping = options['topping']
-#     @quantity = options['quantity'].to_i
-#     @id = options['id'].to_i if options['id']
-#     @customer_id = options['customer_id'].to_i
-#   end
-
-#   def save()
-#     db = PG.connect({ dbname: 'pizza_shop', host: 'localhost' })
-#     sql = "INSERT INTO pizza_orders
-#     (
-#       topping,
-#       quantity,
-#       customer_id
-#     ) VALUES
-#     (
-#       $1, $2, $3
-#     )
-#     RETURNING id"
-#     values = [@topping, @quantity, @customer_id]
-#     db.prepare("save", sql)
-#     @id = db.exec_prepared("save", values)[0]["id"].to_i
-#     db.close()
-#   end
 
 
 #   def update()
